@@ -38,9 +38,6 @@ function App() {
           <Route path="/" element={user ? <Home/>: <Navigate to="/login"/> } />
           <Route path="/login" element={user ? <Navigate to="/"/> : <Login/>} />
           <Route path="/info" element={<Info/>} />
-          {
-            //haz qye la ruta route sea /random/:cant y envie al componente Random la cantidad de numeros que se quiere
-          }
           <Route path="/random/:cant" element={<Random/>} />
         </Routes></div>
       </div>

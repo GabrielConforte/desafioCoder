@@ -13,5 +13,6 @@ export default function home() {
     
     <Link className='buttonContent' to="/info"><button className="cardButton">ver info</button></Link></>
     
+    
   )
 }

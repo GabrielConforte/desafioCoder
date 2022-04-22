@@ -17,7 +17,9 @@ useEffect(() => {
         })
         .then((resObject) => {
             console.log(resObject);
-            setRandom(resObject);
+            //hazlo array
+            let array = Object.entries(resObject);
+            setRandom(array);
         })
         .catch((err) => {
             console.log(err);
@@ -27,21 +29,16 @@ useEffect(() => {
 }, [cant]);
   return (
         <div>
-            <table>
-                <tr>
-                        <td>Posicion</td>
-                        <td>Numero</td>
-                    </tr>
-            </table>
-            {random.map((numero,index) => {
-                return <table>
                     
-                    <tr>
-                        <td>{index}</td>
-                        <td>{numero}</td>
-                    </tr>
-
-                </table> 
+            {random.map((numero,index) => {
+                return <table key={index} >
+                    <tbody>
+                        <tr >
+                            <td>Pos. {index}</td>
+                            <td>{numero[0]} - aparece {numero[1]} {numero[1]===1 ? "vez":"veces"}</td>
+                        </tr>
+                    </tbody>
+                </table>
                 
             })
         }

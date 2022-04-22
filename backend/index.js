@@ -1,4 +1,5 @@
 const cookieSession = require('cookie-session');
+const {fork} = require('child_process');
 const express = require('express');
 const passportSetup = require('./passport');
 const passport = require('passport');
@@ -57,15 +58,17 @@ app.get('/info', (req, res) => {
 
 
 app.use('/api/random/:cant', (req, res) => {
-    if(req.params.cant){
     const { cant } = req.params;
-    const num = parseInt(cant);
-    const random = [];
-    for (let i = 0; i < num; i++) {
-        random.push(Math.floor(Math.random() * 1000));
-    }
-    res.json(random);
-    }else{
-        res.json(Math.floor(Math.random() * 100000));
-    }
+    const child = fork('./utils/child.js');
+    child.send(cant);
+
+    child.on('message', (message) => {
+        console.log(message)
+        res.json(message);
+    });
+
+    child.on("exit", (code)=>{
+        console.log("CHILD EXITED", code);
+    });
 });
+
