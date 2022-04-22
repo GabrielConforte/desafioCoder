@@ -1,7 +1,7 @@
 require("dotenv").config();
 
-let client = {
-    client_url: process.env.CLIENT_URL,
+let backend = {
+    backend_url: process.env.BACKEND_URL,
 }
-
-module.exports = { client };
+console.log(backend.backend_url);
+module.exports = { backend };

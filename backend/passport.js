@@ -1,12 +1,12 @@
 
 const passport = require("passport")
-const {client} = require("./config/index")
+const {config, client} = require("./config/index")
 const FacebookStrategy = require("passport-facebook").Strategy;
-//configura passport para usar facebook
+
 passport.use(new FacebookStrategy({
     clientID:  client.client_id_fb,
     clientSecret: client.client_secret_fb,
-    callbackURL: `${client.client_url}/auth/facebook/callback`,
+    callbackURL: `http://localhost:${config.port}/auth/facebook/callback`,
     profileFields: ['id', 'displayName', 'photos', 'email']
 },
     function (accessToken, refreshToken, profile, done) {

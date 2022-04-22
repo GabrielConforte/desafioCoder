@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const passport = require("passport");
-const {client} = require("../config/index")
+const {config} = require("../config/index")
 
 router.get("/facebook", passport.authenticate("facebook", { scope: ["profile"] }));
 
@@ -14,7 +14,7 @@ router.get("/login/success", (req, res) => {
             {
                 user: req.user,
                 message: "Login success",
-                redirect: client.client_url,
+                redirect: `http://localhost:${config.port}/info`,
                 cookies: req.cookies
             }
         )
@@ -22,13 +22,13 @@ router.get("/login/success", (req, res) => {
 });
 
 router.get("facebook/callback", passport.authenticate("facebook", {
-    successRedirect: client.client_url,
+    successRedirect: `http://localhost:${config.port}`,
     failureRedirect: "/login/failed"
 }));
 
 router.get("/logout", (req, res) => {
     req.logout();
-    res.redirect(client.client_url);
+    res.redirect(`http://localhost:${config.port}`);
 });
 
 module.exports = router;

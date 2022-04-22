@@ -24,5 +24,3 @@ let client = {
 
 
 module.exports = { config, mongo_db, cors, client };
-
-console.log(client)
