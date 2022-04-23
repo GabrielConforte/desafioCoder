@@ -3,7 +3,6 @@ import React, {useEffect,useState} from 'react'
 import {useParams} from 'react-router-dom'
 
 export default function Random() {
-//crea la constante random y setRandom, ademas de otra variable que useParams
 const [random,setRandom] = useState([]);
 const {cant} = useParams();
 useEffect(() => {
@@ -17,7 +16,6 @@ useEffect(() => {
         })
         .then((resObject) => {
             console.log(resObject);
-            //hazlo array
             let array = Object.entries(resObject);
             setRandom(array);
         })
