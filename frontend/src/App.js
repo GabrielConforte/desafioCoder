@@ -9,7 +9,7 @@ import Random from './pages/random';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 function App() {
-  const [user, setUser] = React.useState(true);
+  const [user, setUser] = React.useState(false);
 
         useEffect(() => { 
           const getUser = () => {

@@ -1,5 +1,6 @@
 import React from 'react'
 import facebook from '../img/facebook.png'
+import { Link } from 'react-router-dom';
 export default function login() {
 
     const client = "http://localhost:3030";
@@ -28,6 +29,7 @@ export default function login() {
                 <button className='submit'>Iniciar</button>
             </div>
         </div>
+        <Link className='buttonContent' to="/info"><button className="cardButton">ver info</button></Link>
     </div>
   )
 }
