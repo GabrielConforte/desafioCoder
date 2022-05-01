@@ -76,7 +76,7 @@ app.use('/api/random/:cant', (req, res) => {
 app.use('/api/random/', (req, res) => {
     
     const child = fork('./utils/child.js');
-    child.send(10000);
+    child.send(1000);
 
     child.on('message', (message) => {
         console.log(message)
