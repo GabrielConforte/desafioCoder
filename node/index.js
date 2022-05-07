@@ -20,6 +20,14 @@ const URL = client.client_url
 let cluster = require('cluster');
 const os = require('os');
 
+const routes = require('./routes/store.routes');
+const responseTime = require('response-time');
+let gzip = require('compression');
+//const loggerWinston = require('./config/loggers/winston');
+const logger = require('./config/loggers/pinoLog');
+
+app.use(responseTime());
+//app.use(gzip());
 app.use(cookieSession(
     {
         name: 'session',
@@ -42,9 +50,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //route
-app.use("/auth", authRoutes);
 
+app.use("/auth", authRoutes);
 app.get('/info', (req, res) => {
+    logger.info(`${req.method} ${req.url}`);
     res.json({
         plataforma: process.platform,
         version: process.version,
@@ -55,6 +64,19 @@ app.get('/info', (req, res) => {
         cpuNum: os.cpus().length,
     });
     
+});
+
+app.get('/infozip', gzip(), async (req, res, next) => {
+
+    res.json({
+        plataforma: process.platform,
+        version: process.version,
+        memoriaTotal: process.memoryUsage().heapTotal,
+        path: process.cwd(),
+        pid: process.pid,
+        carpeta: __dirname,
+        cpuNum: os.cpus().length,
+    }); 
 });
 
 
@@ -99,16 +121,39 @@ app.get("/datos", (req, res) => {
 });
 
 if(cluster.isMaster || MODO === "cluster"){
-    console.log(`Master ${process.pid} is running`)
+    logger.info(`Master ${process.pid} is running`)
         const cpuCount = os.cpus().length
         for(let i = 0; i < cpuCount; i++) {
             cluster.fork()
         }
         cluster.on('exit', (worker, code, signal) => {
-            console.log(`worker ${worker.process.pid} died`)
+            logger.info(`worker ${worker.process.pid} died`)
         })
 }else{
     app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}, Worker PID: ${process.pid}, FyH: ${new Date()}`);
+        logger.info(`Server is running on port ${PORT}, Worker PID: ${process.pid}`);
     }); 
 }
+
+//ruta del api
+app.use("/api",routes);
+
+//hagamos rutas en caso de que no exista
+app.use((req, res, next) => {
+    res.status(404).send(
+        logger.warn(`${req.method} ${req.url} 404 - no existe`),
+        
+        
+    );
+}
+);
+
+//como puedo crear un archivo que guarde los errores en un archivo de texto?
+app.use((err, req, res, next) => {
+    logger.error(err.stack);
+    res.status(500).send(
+        logger.error(`${req.method} ${req.url} 500 - error`),
+        err.stack
+    );
+}
+);

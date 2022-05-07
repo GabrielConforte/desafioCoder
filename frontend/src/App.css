@@ -1,4 +1,4 @@
-.navbar{
+.navbarCustom{
   height: 50px;
   background-color: brown;
   color:lavenderblush;
@@ -25,13 +25,13 @@
   object-fit: cover;
 }
 
-.logo{
+.logoCustom{
   font-size: 1.5rem;
   font-weight: bold;
   color: #fff;
 }
 
-.card {
+.tarjeta {
   width: 30%;
   padding: 10px;
   border-radius: 20px;
@@ -148,7 +148,7 @@ input{
   
 }
 
-.Link{
+.LinkCustom{
   color: white;
   text-decoration: none;
 }

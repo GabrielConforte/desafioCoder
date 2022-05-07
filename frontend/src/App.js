@@ -7,13 +7,19 @@ import Login from './pages/Login';
 import Info from './pages/Info';
 import Random from './pages/random';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import FormEdit from './components/FormEdit';
+import Formulario from './components/Formulario';
+
+//import ContextoCarrito from "./components/contexts/ContextoCarrito";
 
 function App() {
-  const [user, setUser] = React.useState(false);
+  const [user, setUser] = React.useState(true);
+  //const [carritoId, setCarritoId] = React.useState(null);
 
+  //ya lo voy a poner bonito todo estoy arreglando muchas cosas al mismo tiempo
         useEffect(() => { 
           const getUser = () => {
-            fetch("http://localhost:3030/auth/login/success", {
+            fetch("http://localhost:8081/auth/login/success", {
               method: "GET",
             })
               .then((response) => {
@@ -39,12 +45,11 @@ function App() {
           <Route path="/login" element={user ? <Navigate to="/"/> : <Login/>} />
           <Route path="/info" element={<Info/>} />
           <Route path="/random/:cant" element={<Random/>} />
+          <Route path="/edit/:id" element={<FormEdit/>} />
+          <Route path="/agregar" element={<Formulario/>} />
         </Routes></div>
       </div>
-     
-      
     </BrowserRouter>
-    
   );
 }
 

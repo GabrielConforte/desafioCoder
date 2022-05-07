@@ -1,14 +1,13 @@
 import React from 'react';
-import {post} from '../ejemplos'
-import Card from '../components/Card'
+import Listado from '../components/Listado'
 import {Link} from 'react-router-dom'
 export default function home() {
   return (
-    <><div className='home'>
-        {post.map(post => (
-                <Card key={post.id} post={post}/>
-        ))}
-        
+    <> Tranquilos, ya voy a poner lindo el front!
+    
+    <div className='home'>
+     
+        <Listado/>
     </div>
     
     <Link className='buttonContent' to="/info"><button className="cardButton">ver info</button></Link></>

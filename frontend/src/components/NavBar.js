@@ -3,9 +3,9 @@ import {Link} from 'react-router-dom'
 
 export default function NavBar({user}) {
   return (
-    <div className='navbar'>
-      <Link className="Link"to='/' >
-        <span className="logo">CoderDesafios</span>
+    <div className='navbarCustom'>
+      <Link className="LinkCustom"to='/' >
+        <span className="logoCustom">CoderDesafios</span>
         </Link>
         {user ? (<ul className="list">
         <li className="item">

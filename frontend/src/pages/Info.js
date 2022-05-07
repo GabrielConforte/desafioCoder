@@ -6,7 +6,7 @@ export default function Info() {
    
     useEffect(() => {
       setTimeout(() => {
-        fetch('http://localhost:3030/info')
+        fetch('http://localhost:8081/info')
             .then(res => res.json())
             .then(data => setInfo(data))
     }, 100);
