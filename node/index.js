@@ -7,11 +7,11 @@ const cookieSession = require('cookie-session');
 const {fork} = require('child_process');
 const passport = require('passport');
 
-const _yargs = require('yargs');
 
-const yargs = _yargs(process.argv.slice(2))
-const PORT = yargs.argv.port || config.port;
-const MODO = yargs.argv.modo;
+let modo_cluster = process.argv[2] == "cluster";
+
+const PORT = config.port;
+
 
 const cors = require('cors');
 const authRoutes = require('./routes/auth');
@@ -23,9 +23,10 @@ const os = require('os');
 const routes = require('./routes/store.routes');
 const responseTime = require('response-time');
 let gzip = require('compression');
-//const loggerWinston = require('./config/loggers/winston');
+
 const logger = require('./config/loggers/pinoLog');
 
+logger.info(modo_cluster)
 app.use(responseTime());
 //app.use(gzip());
 app.use(cookieSession(
@@ -120,7 +121,7 @@ app.get("/datos", (req, res) => {
     res.json({response: `PORT ${PORT}, PID: ${process.pid}, FyH: ${new Date().getUTCDate()}`});
 });
 
-if(cluster.isMaster || MODO === "cluster"){
+if(modo_cluster && cluster.isMaster){
     logger.info(`Master ${process.pid} is running`)
         const cpuCount = os.cpus().length
         for(let i = 0; i < cpuCount; i++) {

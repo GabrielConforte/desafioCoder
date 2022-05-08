@@ -3,7 +3,7 @@ require("dotenv").config();
 let config = {
     port: process.env.PORT,
     cors: process.env.CORS,
-    dev: process.env.NODE_ENV !== "production",
+    dev: process.env.NODE_ENV,
 }
 
 let mongo_db = {
