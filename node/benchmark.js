@@ -21,4 +21,3 @@ function run(url){
 console.log("Corriendo las pruebas");
 
 run("http://localhost:8080/info");
-run("http://localhost:8080/infozip");

@@ -54,21 +54,24 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/auth", authRoutes);
 app.get('/info', (req, res) => {
-    logger.info(`${req.method} ${req.url}`);
-    res.json({
+    let objeto = {
         plataforma: process.platform,
         version: process.version,
         memoriaTotal: process.memoryUsage().heapTotal,
         path: process.cwd(),
         pid: process.pid,
         carpeta: __dirname,
-        cpuNum: os.cpus().length,
+        cpuNum: os.cpus().length
+    }
+    console.log(objeto)
+    res.json({
+        objeto
     });
     
 });
 
 app.get('/infozip', gzip(), async (req, res, next) => {
-
+    logger.info(`${req.method} ${req.url}`);
     res.json({
         plataforma: process.platform,
         version: process.version,
@@ -82,6 +85,7 @@ app.get('/infozip', gzip(), async (req, res, next) => {
 
 
 app.use('/api/random/:cant', (req, res) => {
+    logger.info(`${req.method} ${req.url}`);
     const { cant } = req.params;
     const child = fork('./utils/child.js');
     child.send(cant);
@@ -97,7 +101,7 @@ app.use('/api/random/:cant', (req, res) => {
 });
 
 app.use('/api/random/', (req, res) => {
-    
+    logger.info(`${req.method} ${req.url}`);
     const child = fork('./utils/child.js');
     child.send(1000);
 
@@ -112,12 +116,14 @@ app.use('/api/random/', (req, res) => {
 });
 
 app.use("/saludo", (req, res) => {
+    logger.info(`${req.method} ${req.url}`);
     res.json({
         saludo: "Hola"
     });
 });
 
 app.get("/datos", (req, res) => {
+    logger.info(`${req.method} ${req.url}`);
     res.json({response: `PORT ${PORT}, PID: ${process.pid}, FyH: ${new Date().getUTCDate()}`});
 });
 
@@ -136,10 +142,8 @@ if(modo_cluster && cluster.isMaster){
     }); 
 }
 
-//ruta del api
 app.use("/api",routes);
 
-//hagamos rutas en caso de que no exista
 app.use((req, res, next) => {
     res.status(404).send(
         logger.warn(`${req.method} ${req.url} 404 - no existe`),
@@ -149,7 +153,6 @@ app.use((req, res, next) => {
 }
 );
 
-//como puedo crear un archivo que guarde los errores en un archivo de texto?
 app.use((err, req, res, next) => {
     logger.error(err.stack);
     res.status(500).send(
