@@ -13,7 +13,7 @@ import Formulario from './components/Formulario';
 //import ContextoCarrito from "./components/contexts/ContextoCarrito";
 
 function App() {
-  const [user, setUser] = React.useState(true);
+  const [user, setUser] = React.useState(false);
   //const [carritoId, setCarritoId] = React.useState(null);
 
   //ya lo voy a poner bonito todo estoy arreglando muchas cosas al mismo tiempo
