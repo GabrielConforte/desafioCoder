@@ -63,7 +63,6 @@ app.get('/info', (req, res) => {
         carpeta: __dirname,
         cpuNum: os.cpus().length
     }
-    console.log(objeto)
     res.json({
         objeto
     });

@@ -6,7 +6,7 @@ function run(url){
     const outputStream = new PassThrough();
     const inst = autocannon({
         url,
-        connections: 50,
+        connections: 100,
         duration:20
     });
 
