@@ -3,7 +3,7 @@ import facebook from '../img/facebook.png'
 import { Link } from 'react-router-dom';
 export default function login() {
 
-    const client = "http://localhost:3030";
+    const client = "http://localhost:8080";
 
     const facebookLogin = () => {
         window.open(`${client}/auth/facebook`, "_self")
