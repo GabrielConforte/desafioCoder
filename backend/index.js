@@ -1,7 +1,6 @@
 const cookieSession = require('cookie-session');
 const express = require('express');
-const passportSetup = require('./passport');
-const passport = require('passport');
+const passport  = require('./passport');
 const app = express();
 const { config } = require('./config/index');
 const cors = require('cors');
@@ -17,11 +16,7 @@ app.use(cookieSession(
 
 ))
 
-app.use(cors({
-    origin: config.cors,
-    methods: "GET,PUT,POST,DELETE",
-    credentials: true
-}));
+app.use(cors());
 
 //middlewares
 app.use(passport.initialize());

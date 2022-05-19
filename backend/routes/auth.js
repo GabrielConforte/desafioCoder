@@ -2,7 +2,7 @@ const router = require("express").Router();
 const passport = require("passport");
 const {client} = require("../config/index")
 
-router.get("/facebook", passport.authenticate("facebook", { scope: ["profile"] }));
+router.get("/facebook", passport.authenticate("facebook", { scope: ["email"] }));
 
 router.get("/login/failed", (req, res) => {
     res.send("Login failed");
