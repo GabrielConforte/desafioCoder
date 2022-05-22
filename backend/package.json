@@ -6,29 +6,39 @@
   "scripts": {
     "test": "node benchmark.js",
     "dev": "nodemon index.js",
-    "start": "0x index.js"
+    "start": "node index.js",
+    "0x": "0x index.js",
+    "cluster": "node index.js 'cluster'"
   },
   "keywords": [],
-  "author": "",
+  "author": "Gabriel Conforte",
   "license": "ISC",
   "dependencies": {
-    "autocannon": "^7.9.0",
+    "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
+    "connect-mongo": "^4.6.0",
+    "cookie-parser": "^1.4.6",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
-    "firebase": "^9.8.0",
-    "forever": "^4.0.3",
-    "minimist": "^1.2.6",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.17.3",
+    "method-override": "^3.0.0",
     "moongose": "^1.0.0",
-    "nodemon": "^2.0.15",
+    "morgan": "^1.10.0",
     "passport": "^0.5.2",
     "passport-facebook": "^3.0.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-local": "^1.0.0",
     "pino": "^7.11.0",
     "pino-pretty": "^7.6.1",
     "response-time": "^2.3.2",
-    "winston": "^3.7.2",
     "yargs": "^17.4.1"
+  },
+  "devDependencies": {
+    "autocannon": "^7.9.0",
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.16"
   }
 }

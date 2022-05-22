@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 /* import {AppContext} from "./contexts/ContextoCarrito";
 import {useContext} from "react"; */
 import Tarjeta from "./Tarjeta";
-
+const {config} = require('../config/index.js');
+const BASE_URL = config.base_url;
 function Listado() {
     const [productos, setProductos] = useState([]);
     const [loader, setLoader] = useState(true);
    // const {carritoId} = useContext(AppContext);
-    const URL = "http://localhost:8081"; 
   
     useEffect(() => {
         setTimeout(() => {
@@ -19,7 +19,7 @@ function Listado() {
  
     //crea un metodo getLista
     const getLista = () => {
-        fetch(`${URL}/api/productos`)
+        fetch(`${BASE_URL}/api/productos`)
         .then((response) => {
             if (response.status === 200) return response.json();
             throw new Error("Error al obtener los productos");
@@ -36,7 +36,7 @@ function Listado() {
 
    
     const eliminarProducto = (id) => {
-        fetch(`${URL}/api/productos/${id}`, {
+        fetch(`${BASE_URL}/api/productos/${id}`, {
             method: "DELETE"
         })
             .then(res => res.json())

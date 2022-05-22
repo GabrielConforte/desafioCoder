@@ -1,14 +1,88 @@
-const router = require("express").Router();
+const authRouter = require("express").Router();
 const passport = require("passport");
+const LocalPassport = require("../passport/passportConfig");
+LocalPassport(passport);
 const {config} = require("../config/index")
+const {userDao} = require("../daos/index");
+const bcrypt = require("bcryptjs");
+//usemons mongo-session para guardar la sesion de req.user
 
-router.get("/facebook", passport.authenticate("facebook", { scope: ["profile"] }));
+authRouter.post('/register', async (req, res) => {
+    let usuario = req.body;
+    usuario.rol = "user";
+    let hash = await bcrypt.hashSync(usuario.password, 10);
+    usuario.password = hash;
+    let resultado = await userDao.comprobar(usuario.nombre, usuario.email);
+ 
+    if (resultado === false) {
+           await userDao.save(usuario, (err, result) => {
+                if (err) {
+                    //haz que se envie el status y un mensaje en json
+                    res.status(500).json({
+                        status: 500,
+                        message: "Error al crear el usuario" + err
+                    });
+                }
+            });
+            res.status(200).json({
+                status: 200,
+                message: "El usuario se ha creado correctamente"
+            });
+     } else {
+        res.status(500).json({
+            status: 500,
+            message: "El usuario ya existe"
+        });
+     }
+}
+);
 
-router.get("/login/failed", (req, res) => {
+authRouter.post("/login", passport.authenticate("local"), async (req, res) => {
+    try{
+        console.log(req.user);
+        res.json(
+        "please"
+    );}
+    catch(err){
+        res.json(err);
+    }
+    
+  });
+
+authRouter.post("/logout", (req, res) => {
+    req.logout();
+    res.json({
+        status: 200,
+        message: "Logout correcto"
+    });
+});
+
+authRouter.get('/user',(req, res) => {
+    if (req.user) {
+        res.status(200).json({
+            status: 200,
+            user: {
+                id: req.user.id,
+                email: req.user.email,
+                nombre: req.user.nombre,
+                rol: req.user.rol
+            }}
+    ) }else {
+        res.status(401).json({
+            status: 401,
+            message: "No autenticado"
+        });
+    }
+        
+});
+
+    authRouter.get("/facebook", passport.authenticate("facebook", { scope: ["profile"] }));
+
+    authRouter.get("/login/failed", (req, res) => {
     res.send("Login failed");
 });
 
-router.get("/login/success", (req, res) => {
+authRouter.get("/login/success", (req, res) => {
     if(req.user){
         res.status(200).json(
             {
@@ -21,14 +95,14 @@ router.get("/login/success", (req, res) => {
     }
 });
 
-router.get("facebook/callback", passport.authenticate("facebook", {
+authRouter.get("facebook/callback", passport.authenticate("facebook", {
     successRedirect: `http://localhost:${config.port}`,
     failureRedirect: "/login/failed"
 }));
 
-router.get("/logout", (req, res) => {
+authRouter.get("/logout", (req, res) => {
     req.logout();
     res.redirect(`http://localhost:${config.port}`);
 });
 
-module.exports = router;
+module.exports = authRouter;

@@ -1,7 +1,5 @@
-require("dotenv").config();
 
-let backend = {
-    backend_url: process.env.BACKEND_URL,
+let config = {
+    base_url: process.env.REACT_APP_BASE_URL || "http://localhost:8080",
 }
-console.log(backend.backend_url);
-module.exports = { backend };
+module.exports = { config };

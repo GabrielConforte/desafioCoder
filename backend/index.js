@@ -1,130 +1,40 @@
 
 const express = require('express');
 const app = express();
-const { config,client } = require('./config/index');
-
-const cookieSession = require('cookie-session');
-const {fork} = require('child_process');
-const passport = require('passport');
-
-
+const { config } = require('./config/index');
+const session = require('express-session');
+const passport = require("passport");
 let modo_cluster = process.argv[2] == "cluster";
-
 const PORT = config.port;
-
-
 const cors = require('cors');
-const authRoutes = require('./routes/auth');
-const URL = client.client_url
-
 let cluster = require('cluster');
 const os = require('os');
-
 const routes = require('./routes/store.routes');
+const authRoutes = require('./routes/auth');
 const responseTime = require('response-time');
-let gzip = require('compression');
-
 const logger = require('./config/loggers/pinoLog');
-
-logger.info(modo_cluster)
-app.use(responseTime());
-//app.use(gzip());
-app.use(cookieSession(
-    {
-        name: 'session',
-        keys: ['keyes'],
-        maxAge: 24 * 60 * 60 * 1000
-    }
-
-))
-
-app.use(cors({
-    origin: URL,
-    methods: 'GET, POST, PUT, DELETE',
-}));
-
+const cookieParser = require('cookie-parser');
 
 //middlewares
+
+app.use(responseTime());
+app.use(cookieParser("es un secreto"));
+app.use(session({
+    secret: 'es un secreto',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60
+    }
+}));
+app.use(cors());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//route
-
 app.use("/auth", authRoutes);
-app.get('/info', (req, res) => {
-    let objeto = {
-        plataforma: process.platform,
-        version: process.version,
-        memoriaTotal: process.memoryUsage().heapTotal,
-        path: process.cwd(),
-        pid: process.pid,
-        carpeta: __dirname,
-        cpuNum: os.cpus().length
-    }
-    res.json({
-        objeto
-    });
-    
-});
-
-app.get('/infozip', gzip(), async (req, res, next) => {
-    logger.info(`${req.method} ${req.url}`);
-    res.json({
-        plataforma: process.platform,
-        version: process.version,
-        memoriaTotal: process.memoryUsage().heapTotal,
-        path: process.cwd(),
-        pid: process.pid,
-        carpeta: __dirname,
-        cpuNum: os.cpus().length,
-    }); 
-});
-
-
-app.use('/api/random/:cant', (req, res) => {
-    logger.info(`${req.method} ${req.url}`);
-    const { cant } = req.params;
-    const child = fork('./utils/child.js');
-    child.send(cant);
-
-    child.on('message', (message) => {
-        console.log(message)
-        res.json(message);
-    });
-
-    child.on("exit", (code)=>{
-        console.log("CHILD EXITED", code);
-    });
-});
-
-app.use('/api/random/', (req, res) => {
-    logger.info(`${req.method} ${req.url}`);
-    const child = fork('./utils/child.js');
-    child.send(1000);
-
-    child.on('message', (message) => {
-        console.log(message)
-        res.json(message);
-    });
-
-    child.on("exit", (code)=>{
-        console.log("CHILD EXITED", code);
-    });
-});
-
-app.use("/saludo", (req, res) => {
-    logger.info(`${req.method} ${req.url}`);
-    res.json({
-        saludo: "Hola"
-    });
-});
-
-app.get("/datos", (req, res) => {
-    logger.info(`${req.method} ${req.url}`);
-    res.json({response: `PORT ${PORT}, PID: ${process.pid}, FyH: ${new Date().getUTCDate()}`});
-});
+app.use("/api", routes);
 
 if(modo_cluster && cluster.isMaster){
     logger.info(`Master ${process.pid} is running`)
@@ -141,13 +51,10 @@ if(modo_cluster && cluster.isMaster){
     }); 
 }
 
-app.use("/api",routes);
 
 app.use((req, res, next) => {
     res.status(404).send(
         logger.warn(`${req.method} ${req.url} 404 - no existe`),
-        
-        
     );
 }
 );
@@ -160,3 +67,4 @@ app.use((err, req, res, next) => {
     );
 }
 );
+

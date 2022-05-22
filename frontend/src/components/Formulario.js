@@ -1,12 +1,12 @@
 import React from 'react';
-
+const {config} = require('../config/index.js');
+const BASE_URL = config.base_url;
 function Formulario() {
-
 
     const addProducto = (e) => {
         e.preventDefault();
         //usa fetch para enviar atravez de body los datos del formulario, evita que envie datos vacios
-        fetch("http://localhost:8081/api/productos", {
+        fetch(`${BASE_URL}/api/productos`, {
             method: "POST",
             body: JSON.stringify({
                 title: e.target.title.value,

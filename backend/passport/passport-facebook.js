@@ -1,6 +1,6 @@
 
 const passport = require("passport")
-const {config, client} = require("./config/index")
+const {config, client} = require("../config/index")
 const FacebookStrategy = require("passport-facebook").Strategy;
 
 passport.use(new FacebookStrategy({
@@ -22,3 +22,5 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(function (user, done) {
     done(null, user);
 })
+
+module.exports = passport;

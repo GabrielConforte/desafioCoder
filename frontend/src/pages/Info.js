@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 export default function Info() {
 
     const [info, setInfo] = React.useState(null)
    
     useEffect(() => {
       setTimeout(() => {
-        fetch('http://localhost:8081/info')
+        fetch(`${BASE_URL}/info`)
             .then(res => res.json())
             .then(data => setInfo(data))
     }, 100);

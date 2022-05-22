@@ -7,11 +7,12 @@ const logger = require('../config/loggers/pinoLog');
 	try {
 		await mongoose.connect(MONGO_URI, {
             useNewUrlParser: true,
-            useUnifiedTopology: true});
+            useUnifiedTopology: true,});
 		logger.info("Database conectada");
 	} catch (error) {
 		logger.error(error);
 		logger.error("No se puede conectar a la base de datos");
+		process.exit(1)	
 	}
 	
 })();
