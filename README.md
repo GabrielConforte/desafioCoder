@@ -8,7 +8,7 @@ para iniciar en modo fork
 modo cluster
 >node index.js "cluster"
 
-modo 0X
+iniciar
 >npm start
 
 modo autocannon
