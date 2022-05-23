@@ -17,7 +17,6 @@ function Listado() {
         }, 1000);
     }, []);
  
-    //crea un metodo getLista
     const getLista = () => {
         fetch(`${BASE_URL}/api/productos`)
         .then((response) => {
@@ -32,7 +31,6 @@ function Listado() {
             console.log(err);
         });
     };
-
 
    
     const eliminarProducto = (id) => {

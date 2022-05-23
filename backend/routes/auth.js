@@ -19,7 +19,6 @@ authRouter.post('/register', async (req, res) => {
     if (resultado === false) {
            await userDao.save(usuario, (err, result) => {
                 if (err) {
-                    //haz que se envie el status y un mensaje en json
                     res.status(500).json({
                         status: 500,
                         message: "Error al crear el usuario" + err
@@ -40,7 +39,7 @@ authRouter.post('/register', async (req, res) => {
 );
 
 authRouter.post('/login', checkNotAuthenticated, passport.authenticate('local'
-//guarda en el sessionStorage el usuario
+
 ), (req, res) => {
     res.status(200).json({
         status: 200,

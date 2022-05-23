@@ -9,9 +9,6 @@ export default function NavBar({user}) {
 
 
   const logoutFunction = () => {
-    //haz un fetch a la ruta /auth/logout
-    //y luego setUser a null
-    //y setIsLogged a false
    fetch(`${BASE_URL}/auth/logout`, {
       method: 'POST',
       headers: {

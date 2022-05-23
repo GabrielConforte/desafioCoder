@@ -1,12 +1,13 @@
 //crea un componente de react llamado FormEdit, que reciba datos por props y los pase por consola
 import React from "react";
 import { useState, useEffect} from "react";
+const {config} = require('../config/index.js');
+const URL = config.base_url;
 
 function FormEdit(){
     //detecta el endpoint de la url
     const endpoint = window.location.pathname.split("/")[2];
     const [producto, setProducto] = useState({});
-    const URL = "http://localhost:8081";
     console.log(`${URL}/api/productos/${endpoint}`)
     
     useEffect(() => {

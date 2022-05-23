@@ -40,8 +40,12 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//routes
+
 app.use("/auth", authRoutes);
 app.use("/api", routes);
+
+//modo cluster
 
 if(modo_cluster && cluster.isMaster){
     logger.info(`Master ${process.pid} is running`)
@@ -58,6 +62,8 @@ if(modo_cluster && cluster.isMaster){
     }); 
 }
 
+
+//app
 
 app.use((req, res, next) => {
     res.status(404).send(
