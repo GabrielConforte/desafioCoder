@@ -27,7 +27,14 @@ app.use(session({
         maxAge: 1000 * 60 * 60
     }
 }));
-app.use(cors());
+app.use(cors(
+    {
+        origin: '*',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true,
+        exposedHeaders: ['x-auth-token']
+    }
+));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.json());

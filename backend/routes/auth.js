@@ -5,7 +5,9 @@ LocalPassport(passport);
 const {config} = require("../config/index")
 const {userDao} = require("../daos/index");
 const bcrypt = require("bcryptjs");
-//usemons mongo-session para guardar la sesion de req.user
+
+authRouter.use(passport.initialize());
+authRouter.use(passport.session());
 
 authRouter.post('/register', async (req, res) => {
     let usuario = req.body;
@@ -37,17 +39,15 @@ authRouter.post('/register', async (req, res) => {
 }
 );
 
-authRouter.post("/login", passport.authenticate("local"), async (req, res) => {
-    try{
-        console.log(req.user);
-        res.json(
-        "please"
-    );}
-    catch(err){
-        res.json(err);
-    }
-    
-  });
+authRouter.post('/login', checkNotAuthenticated, passport.authenticate('local'
+//guarda en el sessionStorage el usuario
+), (req, res) => {
+    res.status(200).json({
+        status: 200,
+        message: "El usuario se ha logueado correctamente",
+        user: req.user
+    });
+});
 
 authRouter.post("/logout", (req, res) => {
     req.logout();
@@ -105,4 +105,19 @@ authRouter.get("/logout", (req, res) => {
     res.redirect(`http://localhost:${config.port}`);
 });
 
+
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+      return next()
+    }
+  
+    res.redirect('/login')
+  }
+  
+  function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+      return res.redirect('http://localhost:3000')
+    }
+    next()
+  }
 module.exports = authRouter;

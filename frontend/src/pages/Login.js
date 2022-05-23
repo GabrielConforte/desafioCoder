@@ -24,7 +24,7 @@ const localLogin = (e) => {
         }).then(res => res.json())
         .then(data => {
             if (data.status === 200) {
-                alert(data.message);
+                localStorage.setItem('user', JSON.stringify(data.user));
                 window.location.href = '/';
             } else {
                 alert(data.message);
