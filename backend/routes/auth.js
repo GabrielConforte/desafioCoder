@@ -7,11 +7,20 @@ const {userDao} = require("../models/daos/index");
 const {isAdmin} = require("../models/daos/index");
 const bcrypt = require("bcryptjs");
 const logger = require('../config/loggers/pinoLog');
-//const upload = require("../libs/storage");
+const fs = require("fs");
 
 const multer  = require('multer')
-const upload = multer({dest: 'public/img'})
-
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/images/')
+    }
+    , filename: function (req, file, cb) {
+        //a file name quitale la extensión
+        cb(null, file.originalname.split('.')[0] + '-' + Date.now() + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
+    }
+}
+)
+const upload = multer({ storage: storage })
 
 authRouter.use(passport.initialize());
 authRouter.use(passport.session());
@@ -40,51 +49,38 @@ authRouter.post('/asignar/:email', async (req, res) => {
     }
     ;})
 
-authRouter.post('/img', upload.single('file'), async (req, res) => {
-    logger.info(req.file)
-    try{ 
-        res.send(req.file.filename) }
-   catch(err){
-         logger.error(err)
-    }
-}
-
-)
-authRouter.post('/register', async (req, res) => {
-   logger.info(req.file)
+authRouter.post('/register', upload.single('file'), async (req, res) => {
+    
     try {
-        //haz body objeto con los datos del formulario
-        const {email, password, nombre} = req.body;
-    let usuario = req.body;
-    let hash = await bcrypt.hashSync(usuario.password, 10);
-    usuario.password = hash;
-    let resultado = await userDao.comprobar(usuario.nombre, usuario.email);
-    usuario.img = req.file.filename;
-
-    if (resultado === false) {
-           await userDao.save(usuario, (err, result) => {
-                if (err) {
-                    res.status(500).json({
-                        status: 500,
-                        message: "Error al crear el usuario" + err
-                    });
-                }
+        let usuario = req.body;
+        let hash = await bcrypt.hashSync(usuario.password, 10);
+        usuario.password = hash;
+        let resultado = await userDao.comprobar(usuario.nombre, usuario.email);
+        usuario.img = req.file.filename;
+        if (resultado === false) {
+            await userDao.save(usuario, (err, result) => {
+                    if (err) {
+                        res.status(500).json({
+                            status: 500,
+                            message: "Error al crear el usuario" + err
+                        });
+                    }
+                });
+                res.status(200).json({
+                    status: 200,
+                    message: "El usuario se ha creado correctamente"
+                });
+        } else {
+            res.status(500).json({
+                status: 500,
+                message: "El usuario ya existe"
             });
-            res.status(200).json({
-                status: 200,
-                message: "El usuario se ha creado correctamente"
-            });
-     } else {
-        res.status(500).json({
-            status: 500,
-            message: "El usuario ya existe"
-        });
-     }
-}
-catch (error) {
-    logger.error(error);
-}
-}
+        }
+    }
+    catch (error) {
+        logger.error(error);
+    }
+    }
 );
 
 authRouter.post('/login', checkNotAuthenticated, passport.authenticate('local'
@@ -114,7 +110,6 @@ authRouter.get('/user',(req, res) => {
                 id: req.user.id,
                 email: req.user.email,
                 nombre: req.user.nombre,
-                rol: req.user.rol
             }}
     ) }else {
         res.status(401).json({

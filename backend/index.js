@@ -35,10 +35,13 @@ app.use(cors(
         exposedHeaders: ['x-auth-token']
     }
 ));
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '/public'))
+
 
 //routes
 

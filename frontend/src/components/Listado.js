@@ -12,13 +12,15 @@ function Listado(user) {
     const [productos, setProductos] = useState([]);
     const [loader, setLoader] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [filtro, setFiltro] = useState('');
     
+
     useEffect(() => {
         setTimeout(() => {
-            comprobarAdmin(user);
             getLista();
-        }, 1000);
-    }, [user, carrito]);
+            comprobarAdmin(user);
+            }, 1000);
+    }, [filtro]);
  
     const comprobarAdmin = (user) => {
             fetch(`${BASE_URL}/auth/check/${user.email}`, {
@@ -42,6 +44,23 @@ function Listado(user) {
             throw new Error("Error al obtener los productos");
         })
         .then((resObject) => {
+            console.log(resObject)
+            switch(filtro){
+                case 'todos':
+                    resObject = resObject
+                    break;
+                case 'menorP':
+                    resObject = resObject.sort((a, b) => a.price - b.price);
+                    break;
+                case 'mayorP':
+                    resObject = resObject.sort((a, b) => b.price - a.price);
+                    break;
+                case 'enStock':
+                    resObject = resObject.filter(producto => producto.stock !== 0);
+                    break;
+                default:
+                    break;
+            }
             setProductos(resObject);
             setLoader(false);
         }) 
@@ -84,9 +103,6 @@ function Listado(user) {
             )
     }
 
-
-        
-
     return (
         <div className="container">
         {loader ? (
@@ -102,6 +118,14 @@ function Listado(user) {
         
           </>
         ) : (<>
+        
+        <div className='container'>
+                filtros:
+                <button className="btn border col m-2" type="radio" name="filter" value="all" onClick={()=>{setFiltro("todos")}}>Todos</button>
+                <button className="btn border col m-2" type="radio" name="filter" value="priceM"onClick={()=>{setFiltro("mayorP")}} >Mayor</button>
+                <button className="btn border col m-2" type="radio" name="filter" value="priceL" onClick={()=>{setFiltro("menorP")}}>Menor</button>
+                <button className="btn border col m-2" type="radio" name="filter" value="onStock" onClick={()=>{setFiltro("enStock")}}>en stock</button>
+                </div>
         
         {productos.length > 0 ?
             ( <div className="row">

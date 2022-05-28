@@ -19,6 +19,7 @@ function App() {
   const [user, setUser] = useState(JSON.parse(sessionStorage.getItem('user')));
   const  [carrito, setCarrito] = useState(JSON.parse(sessionStorage.getItem('carrito')));
   const [isLogged, setIsLogged] = useState(false);
+  const srcImg = `${BASE_URL}/images/955c55ebe0afd473073501013b37344c.jpg-1653753775346.jpg`;
   useEffect(() => {
     if (user) {
       setIsLogged(true);

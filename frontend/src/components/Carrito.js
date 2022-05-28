@@ -7,7 +7,6 @@ function Carrito() {
     const [carrito, setCarrito] = useState(JSON.parse(sessionStorage.getItem('carrito')));
     const user = JSON.parse(sessionStorage.getItem('user'));
     const [loader, setLoader] = useState(true);
-    const [aux, setAux] = useState([]);
 
     useEffect(() => {
                 if(carrito===null){
@@ -16,7 +15,7 @@ function Carrito() {
                     getLista();
                     setLoader(false);}
                 
-    }, [carrito, loader]);
+    }, [carrito]);
 
 
     const getLista = () => {
@@ -54,28 +53,26 @@ function Carrito() {
             method: "DELETE"
         }).then(res => res.json())
         .then(data => {
-                setCarrito([]);
                 sessionStorage.removeItem('carrito');
-                window.location.reload();
             })
     }
     return (
-        <div className="col-2">
-            <div className="card-body">
-                <h5 className="card-title">Carrito</h5>
-                <div className="card-text">
+        <div className="col-2 m-auto">
+            <div className="row">
+                <h5 className="">Carrito</h5>
+                <div className="">
                     
-                    {loader ? <div className="loader">?</div> : <> {carrito.items.length !== 0 ? (
+                    {loader ? <div className="loader">?</div> : <> {carrito.items.length > 0 ? (
                         <div>
-                            <ul className="list-group">
+                            <ul className="list-group m-2 text-center">
                                 {carrito.items.map(producto => (
                                     <li className="list-group-item" key={producto.code}>
                                         <div className="row">
-                                            <div className="col-6">
+                                            <div className=" m-2 card">
                                                 {producto.title}
                                             </div>
-                                            <div className="col-6">
-                                                {producto.price}
+                                            <div className=" m-2 card">
+                                                ${producto.price}
                                             </div>
                                             <div>
                                                 {"x" + producto.cant}
@@ -95,7 +92,8 @@ function Carrito() {
                         </div>
                     ) 
                         
-                    : <div>No hay productos</div>
+                    : 
+                        <div className="alert alert-info" role="alert"> no hay productos </div>
                     }</>}
                     
                 </div>
@@ -106,13 +104,3 @@ function Carrito() {
 }
 
 export default Carrito;
-
-
-
-/**628ade6da144d3db4b8304e7 GABRIEL CONFORTE
- * 
- * 628f9b30eb8dd2292feebde1
- * 628f9b30eb8dd2292feebde1
- * 
- *  1233
- */

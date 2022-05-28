@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React,{ useEffect, useState} from 'react'
 import {Link} from 'react-router-dom'
 //import CarritoIcon from './CarritoIcon'
 const {config} = require('../config/index.js');
@@ -7,10 +7,17 @@ const BASE_URL = config.base_url;
 
 
 export default function NavBar({user, carrito}) {
-  const img = 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200';
+      const [img, setImg] = useState("");
+      const img2 = 'https://cdn-icons-png.flaticon.com/512/18/18399.png';
 
-  const img2 = 'https://cdn-icons-png.flaticon.com/512/18/18399.png';
-
+  useEffect(() => {
+    if (user) {
+      console.log(user);
+      setImg(`${BASE_URL}/images/${user.img}`);
+    }else{
+      setImg(`${BASE_URL}/images/955c55ebe0afd473073501013b37344c.jpg-1653753775346.jpg`);
+    }
+  }, [user]);
 
   const logoutFunction = () => {
    fetch(`${BASE_URL}/auth/logout`, {
@@ -22,6 +29,8 @@ export default function NavBar({user, carrito}) {
     .then(data => {
       if (data.status === 200) {
         sessionStorage.removeItem('user');
+        
+        console.log(img)
         sessionStorage.removeItem('carrito')
        
         window.location.href = '/';

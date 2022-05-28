@@ -8,6 +8,9 @@ const axios = require('axios');
 export default function Register() {
     
     const [file, setFile] = React.useState(null);
+    const [nombre, setName] = React.useState('');
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
 
 
     useEffect(() => {
@@ -16,27 +19,28 @@ export default function Register() {
     , [file])
 
     const register = () => {
-        fetch(`${BASE_URL}/auth/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                nombre: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value,
-                img: " "
-            })
-        })//el servidor enviara el status y el mensaje
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 200) {
-                alert(data.message);
-                window.location.href = '/login';
-            } else {
-                alert(data.message);;
+        const formData = new FormData();
+        const data = new FormData();
+        console.log(formData)
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('nombre', nombre);
+        formData.append('file', file);
+        axios.post(`${BASE_URL}/auth/register`, formData)
+            .then(res => {
+                console.log(res)
             }
-        })
+            )
+            .catch(err => {
+                console.log(err)
+            }
+            )
+        /* data.append('file', file);
+            axios.post(`${BASE_URL}/auth/img`, data).then(res => {
+                console.log(res.data);}).catch(err => {
+                    console.log(err);
+                }
+            ) */
     }
 
     const send = event => {
@@ -54,7 +58,7 @@ export default function Register() {
 
     const comprobar = (e) => {
         e.preventDefault();
-        if(document.getElementById('name').value === '' || document.getElementById('email').value === '' || document.getElementById('password').value === '' || document.getElementById('passwordB').value === ''){
+        if(document.getElementById('nombre').value === '' || document.getElementById('email').value === '' || document.getElementById('password').value === '' || document.getElementById('passwordB').value === ''){
             alert('Rellena todos los campos')
         }
         else if(document.getElementById('password').value !== document.getElementById('passwordB').value){
@@ -74,29 +78,30 @@ export default function Register() {
         <h1 className='loginTitle p-3'>Registra tu usuario</h1> 
         <div className='wrap'>
             <div className='derecha input'>
-               <form className='formLog' encType='multipart/form-data'>
-                Registro con email
-                <input className="m-2" type="text" placeholder='Nombre' id="name" autoComplete=''></input>
-                <input className="m-2" type="text" placeholder='Email' id="email" autoComplete=''></input>
-                <input className="m-2" type="password" placeholder='Contraseña' id="password" autoComplete=''></input>
-                <input className="m-2" type="password" placeholder='Contraseña Otra Vez' id="passwordB" autoComplete=''></input>
-                 <input type="file" name="img" id="img" accept='.jpg'></input>
-                <button className='submit m-2' onClick={comprobar}>Iniciar</button>
-                <Link to='/login' ><button className='submit m-2'>Ya tengo usuario</button></Link>
-               </form> 
-            </div>
-            <form onSubmit={send}>
-                <input type="file" name="img" id="img2" 
+            <form className='formLog' onSubmit={register}>
+                <label htmlFor='nombre'>Nombre</label>
+                <input type='text' id='nombre' onChange={(e) => setName(e.target.value)}/>
+                
+                <label htmlFor='email'>Email</label>
+                <input type='email' id='email' onChange={(e) => setEmail(e.target.value)}/>
+                
+                <label htmlFor='password'>Contraseña</label>
+                <input type='password' id='password' autoComplete=" " onChange={(e) => setPassword(e.target.value)}/>
+                
+                <label htmlFor='passwordB'>Confirmar contraseña</label>
+                <input type='password' id='passwordB' autoComplete=" " onChange={(e) => setPassword(e.target.value)}/>
+                
+                <input type="file" name="file" id="file" 
                 onChange={event => {
                     const  files  = event.target.files[0];
                     setFile(files);
                 }}>
                 </input>
-                <button type="submit">
-                    </button>
+                <button className='submit m2' type="submit">Iniciar</button>
                     </form>
-            
-        </div>
+                    <Link to='/login' ><button className='submit m-2'>Ya tengo usuario</button></Link>
+                       </div>
+                </div>
     </div>
   )
 }
