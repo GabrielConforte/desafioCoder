@@ -1,11 +1,11 @@
 import React from 'react';
 const {config} = require('../config/index.js');
 const BASE_URL = config.base_url;
+
 function Formulario() {
 
     const addProducto = (e) => {
         e.preventDefault();
-        //usa fetch para enviar atravez de body los datos del formulario, evita que envie datos vacios
         fetch(`${BASE_URL}/api/productos`, {
             method: "POST",
             body: JSON.stringify({
@@ -27,9 +27,9 @@ function Formulario() {
             })
     }
 
-
         return (
-                    <div className="col-5">
+                    <div className="col-5 mt-2 m-auto
+                    ">
                         <div className="card">
                             <div className="card-body">
 
@@ -53,12 +53,13 @@ function Formulario() {
                                     <label>Stock</label>
                                     <input type="number" className="form-control" id="stock" name="stock"placeholder="Stock"></input>
                                 </div>
-                                <button type="submit" className="btn btn-dark text-info">Enviar</button>
+                                <div className='m-2 botonera'> <button type="submit" className="btn btn-dark text-info">Enviar</button>
                                 <button type='reset' className="btn btn-dark text-info">Limpiar</button>
                                 <button type='button' className="btn btn-dark text-info" onClick={
                                     () => {
                                         window.history.back();
-                                    }}>Regresar</button>
+                                    }}>Regresar</button></div>
+                               
                             </form>
 
                                 </div>

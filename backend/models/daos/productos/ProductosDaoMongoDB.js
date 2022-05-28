@@ -1,5 +1,5 @@
 
-const ContenedorMongoDB = require("../../contenedores/ContenedorMongoDB.js");
+const ContenedorMongoDB = require("../../ContenedorMongoDB.js");
 
 class ProductosDaoMongoDB extends ContenedorMongoDB {
 	constructor() {

@@ -1,5 +1,5 @@
 
-const {userDao} = require("../daos/index");
+const {userDao} = require("../../models/daos/index");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const passportLocal= require("passport-local").Strategy;

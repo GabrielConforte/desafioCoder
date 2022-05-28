@@ -1,5 +1,6 @@
 const {mongoose} = require('mongoose');
-const { mongo_db } = require('../config/index.js');
+const { mongo_db } = require(//index.js esta en la carpeta backend config, traelo correctamnente
+	'../config/index.js');
 const MONGO_URI = `mongodb+srv://${mongo_db.mongo_uri}/${mongo_db.mongo_name}?retryWrites=true&w=majority`;
 const logger = require('../config/loggers/pinoLog');
 
@@ -33,8 +34,7 @@ class ContainerMongoDB {
 
 	async getById(id) {
 		try {
-			
-			const data = await this.collection.findOne({"id": id});
+			const data = await this.collection.findOne({_id: id});
 			return data;
 		} catch (error) {
 			logger.error("no se pudo leer el archivo");
@@ -79,7 +79,7 @@ class ContainerMongoDB {
 
 	async add(data) {
 		try {
-			await this.collection({...data, timestamps: new Date(), items: []} ).save();
+			await this.collection({user: data, timestamps: new Date(), items: []} ).save();
 		} catch (error) {
 			logger.error("no se puede crear");
 		}

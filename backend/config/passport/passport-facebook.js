@@ -1,6 +1,6 @@
 
 const passport = require("passport")
-const {config, client} = require("../config/index")
+const {config, client} = require("../index")
 const FacebookStrategy = require("passport-facebook").Strategy;
 
 passport.use(new FacebookStrategy({

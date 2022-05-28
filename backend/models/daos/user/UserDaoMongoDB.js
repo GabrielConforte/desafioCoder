@@ -1,4 +1,4 @@
-const ContenedorMongoDB = require("../../contenedores/ContenedorMongoDB.js");
+const ContenedorMongoDB = require("../../ContenedorMongoDB.js");
 
 
 class UsuarioDaoMongoDB extends ContenedorMongoDB {
@@ -7,34 +7,30 @@ class UsuarioDaoMongoDB extends ContenedorMongoDB {
             nombre: {type: String, required: true},
             email: {type: String, required: true, unique: true},
             password: {type: String, required: true},
-            rol: {type: String, required: true},
+            img: {type: String, required: true},
             });
         }
         
-        comprobar(nombre, email) {
+    comprobar(nombre, email) {
         return this.collection.findOne({nombre: nombre, email: email}).then(usuario => {
-            if (usuario !== null) {
-                return true;
-            } else {
-                return false;
+                if (usuario !== null) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
+        )
     }
-    )
-    }
-        getUserByEmail(email) {
+    getUserByEmail(email) {
         return this.collection.findOne({email: email}).then(usuario => {
-            if (usuario !== null) {
-                return usuario;
-            } else {
-                return null;
+                if (usuario !== null) {
+                    return usuario;
+                } else {
+                    return null;
+                }
             }
-    }
-    )
-
-
+        )
     }
 
 }
-
-
     module.exports = UsuarioDaoMongoDB;

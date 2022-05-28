@@ -12,6 +12,7 @@ export default function login() {
 
 const localLogin = (e) => {
     e.preventDefault();
+    if(document.getElementById('email').value != '' ||  document.getElementById('password').value != ''){
         fetch(`${BASE_URL}/auth/login`, {
             method: 'POST',
             headers: {
@@ -24,13 +25,16 @@ const localLogin = (e) => {
         }).then(res => res.json())
         .then(data => {
             if (data.status === 200) {
-                localStorage.setItem('user', JSON.stringify(data.user));
+                sessionStorage.setItem('user', JSON.stringify(data.user));
                 window.location.href = '/';
             } else {
                 alert(data.message);
             }
         })
+    }else{
+        alert('No dejes campos vacios')
     }
+}
   return (
     <div className='login'>
         <h1 className='loginTitle p-3'>Inicio de sesión</h1> 
@@ -38,8 +42,8 @@ const localLogin = (e) => {
             <div className='derecha input'>
                 <form className='formLog'>
                 Login con tu cuenta
-                <input className="m-2" type="text" placeholder='Email' id="email"></input>
-                <input  className="m-2" type="text" placeholder='Contraseña' id="password"></input>
+                <input className="m-2" type="text" placeholder='Email' id="email" autoComplete="email"></input>
+                <input  className="m-2" type="password" placeholder='Contraseña' id="password" autoComplete='current-password'></input>
                 <button  className='m-2 submit' onClick={localLogin}>Iniciar</button>
                 <Link to='/register' ><button className='m-2 submit'>Registrarse</button></Link>
                 </form>

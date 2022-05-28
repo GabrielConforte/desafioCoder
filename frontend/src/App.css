@@ -7,7 +7,17 @@
   justify-content: space-around;
 }
 
-/*haz que la clase formLog centre su contenido*/
+/*haz la clase botonera que separe 4px cada elemento de su contenido*/
+
+.botonera{
+  display: flex;
+  justify-content: space-around;
+
+  align-items: center;
+  width: 55%;
+  height: 100%;
+}
+
 .formLog{
   display: flex;
   flex-direction: column;

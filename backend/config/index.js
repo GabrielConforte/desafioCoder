@@ -21,5 +21,5 @@ let client = {
     client_secret_fb: process.env.CLIENT_SECRET_FB
 }
 
-
+console.log(__dirname)
 module.exports = { config, mongo_db, cors, client };

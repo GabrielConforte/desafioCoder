@@ -1,34 +1,46 @@
-import React , {useState, useEffect, useContext} from "react";
-import {AppContext} from "./contexts/ContextoCarrito";
+import React , {useState, useEffect} from "react";
+const {config} = require('../config/index.js');
+const BASE_URL = config.base_url;
 
 
 function Carrito() {
-   const {carritoId} = useContext(AppContext);
-   const [carrito, setCarrito] = useState([]);
+    const [carrito, setCarrito] = useState(JSON.parse(sessionStorage.getItem('carrito')));
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    const [loader, setLoader] = useState(true);
+    const [aux, setAux] = useState([]);
 
     useEffect(() => {
-        console.log(carritoId)
-        getLista();
-    }, []);
+                if(carrito===null){
+                    getLista();
+                }else{
+                    getLista();
+                    setLoader(false);}
+                
+    }, [carrito, loader]);
+
 
     const getLista = () => {
-            fetch("/api/carrito")
-            .then(res => res.json())
-            .then(data => {
-
-                if(data.length > 0){
-                setCarrito(data[0].items);
-                }
-                else{
-                    fetch("/api/carrito", {
-                        method: "POST"
-                    })
-                }
-            })
-    }
+        fetch(`${BASE_URL}/api/carrito/${user._id}`)
+        .then((response) => {
+            if (response.status === 200) return response.json();
+            throw new Error("Error al obtener los productos");
+        })
+        .then((resObject) => {
+            setTimeout(() => {
+            sessionStorage.setItem('carrito', JSON.stringify(resObject));
+            setCarrito(resObject);
+                setLoader(false);
+            }
+            , 1000);
+        }
+        ) 
+        .catch((err) => {
+            console.log(err);
+        });
+    };
 
     const eliminarProducto = (id) => {
-        fetch(`/api/carrito/${carritoId}/productos/${id}`, {
+        fetch(`${BASE_URL}/api/carrito/${user.id}/productos/${id}`, {
             method: "DELETE"
         })
             .then(res => res.json())
@@ -38,43 +50,54 @@ function Carrito() {
     }
 
     const vaciarCarrito = () => {
-        fetch(`/api/carrito/${carritoId}`, {
+        fetch(`${BASE_URL}/api/carrito/${user._id}`, {
             method: "DELETE"
-        })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
+        }).then(res => res.json())
+        .then(data => {
                 setCarrito([]);
+                sessionStorage.removeItem('carrito');
+                window.location.reload();
             })
     }
     return (
         <div className="col-2">
             <div className="card-body">
-                <h5 className="card-title">Carrito{}</h5>
+                <h5 className="card-title">Carrito</h5>
                 <div className="card-text">
                     
-                    { carrito.length > 0 ? <>
-                    {console.log(carrito)}{
-                    carrito.map(items => {
-                            return (
-                                <div key={items.code} className="mb-3 card text-center">
-                                    <h4>{items.title}</h4>
-                                    <p>{"$"+items.price}</p>
-                                    <p>{<img width="50px" src={items.thumbnail}></img>}</p>
-                                    <button type="submit" onClick={()=>eliminarProducto(items.code)} className="btn btn-danger">eliminar</button>
+                    {loader ? <div className="loader">?</div> : <> {carrito.items.length !== 0 ? (
+                        <div>
+                            <ul className="list-group">
+                                {carrito.items.map(producto => (
+                                    <li className="list-group-item" key={producto.code}>
+                                        <div className="row">
+                                            <div className="col-6">
+                                                {producto.title}
+                                            </div>
+                                            <div className="col-6">
+                                                {producto.price}
+                                            </div>
+                                            <div>
+                                                {"x" + producto.cant}
+                                            </div>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                            <div className="row">
+                                <div className="col-6">
+                                    <button className="btn btn-danger" onClick={vaciarCarrito}>Vaciar carrito</button>
                                 </div>
-                            )
-                        }
-                        )}
-                        
-                        <button type="submit" onClick={()=>vaciarCarrito()}className="btn btn-warning">Vaciar Carrito</button>
-
-                        </>
+                                <div className="col-6">
+                                    <button className="btn btn-success">Pagar</button>
+                                </div>
+                            </div>
+                        </div>
+                    ) 
                         
                     : <div>No hay productos</div>
-                    }
-
-
+                    }</>}
+                    
                 </div>
             </div>
         </div>
@@ -83,3 +106,13 @@ function Carrito() {
 }
 
 export default Carrito;
+
+
+
+/**628ade6da144d3db4b8304e7 GABRIEL CONFORTE
+ * 
+ * 628f9b30eb8dd2292feebde1
+ * 628f9b30eb8dd2292feebde1
+ * 
+ *  1233
+ */

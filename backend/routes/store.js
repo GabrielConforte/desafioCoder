@@ -1,7 +1,7 @@
 const express = require('express');
 const routes = express.Router();
-const {productosDao} = require("../daos/index");
-const {carritosDao} = require("../daos/index");
+const {productosDao} = require("../models/daos/index");
+const {carritosDao} = require("../models/daos/index");
 const isAdmin = true
 const logger = require('../config/loggers/pinoLog');
 
@@ -37,7 +37,6 @@ routes.post('/productos', async (req, res) => {
         }
     }
     catch (error) {
-        logger.error(error);
     }
     }
     else{
@@ -86,22 +85,28 @@ routes.get('/productos', async (req, res) => {
             });
 
  //***************************************************************************************************//
-
-
 //rutas para carrito
-routes.post("/carrito", async (req, res) => {
-	try {
-		carritosDao.add({...req.body});
-		res.send("Carrito creado");
-	} catch (error) {
-		res.send(error);
-		};
-	});
 
-routes.get("/carrito/:id", async (req, res) => {
+routes.get('/carrito/:id', async (req, res) => {
     try {
-        let objeto = await carritosDao.getById(req.params.id);
-        res.json(objeto[0]);
+        let objeto = await carritosDao.getByIdUser(req.params.id);
+        if (objeto != undefined) {
+            res.json(objeto);
+            }
+            else {
+                let objeto = await carritosDao.addCarrito(req.params.id);
+                res.json(objeto);
+            }
+    }
+    catch (error) {
+        logger.error(error);
+    }
+});
+
+routes.post("/carrito/:id", async (req, res) => {
+    try {
+        let carrito = await carritosDao.addCarrito(req.params.id);
+        res.send(carrito);
     } catch (error) {
         res.send(error);
     };
@@ -109,7 +114,7 @@ routes.get("/carrito/:id", async (req, res) => {
 
 routes.delete('/carrito/:id', async (req, res) => {
     try {
-        let objeto = await carritosDao.deleteAllbyId(req.params.id);
+        let objeto = await carritosDao.deleteItems(req.params.id);
         res.json(objeto);
         }
         catch (error) {
