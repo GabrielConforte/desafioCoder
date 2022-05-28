@@ -12,7 +12,6 @@ export default function Home(user) {
   }, [user]);
 
   const comprobarAdmin = (user) => {
-
             fetch(`${BASE_URL}/auth/check/${user.user.email}`, {
                 method: 'GET',
                 headers: {
@@ -23,7 +22,6 @@ export default function Home(user) {
                     .then(data => {
                             setIsAdmin(data.isAdmin);
                         }
-                    
                 )
     }
 

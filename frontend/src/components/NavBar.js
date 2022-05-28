@@ -12,10 +12,9 @@ export default function NavBar({user, carrito}) {
 
   useEffect(() => {
     if (user) {
-      console.log(user);
       setImg(`${BASE_URL}/images/${user.img}`);
     }else{
-      setImg(`${BASE_URL}/images/955c55ebe0afd473073501013b37344c.jpg-1653753775346.jpg`);
+      setImg(`${BASE_URL}/images/default.png`);
     }
   }, [user]);
 

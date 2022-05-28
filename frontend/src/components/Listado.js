@@ -7,7 +7,6 @@ import Tarjeta from "./Tarjeta";
 const {config} = require('../config/index.js');
 const BASE_URL = config.base_url;
 function Listado(user) {
-    let carrito = user.user.carrito
     user  = user.user.user
     const [productos, setProductos] = useState([]);
     const [loader, setLoader] = useState(true);
@@ -44,7 +43,6 @@ function Listado(user) {
             throw new Error("Error al obtener los productos");
         })
         .then((resObject) => {
-            console.log(resObject)
             switch(filtro){
                 case 'todos':
                     resObject = resObject
