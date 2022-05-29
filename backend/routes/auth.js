@@ -7,9 +7,9 @@ const {userDao} = require("../models/daos/index");
 const {isAdmin} = require("../models/daos/index");
 const bcrypt = require("bcryptjs");
 const logger = require('../config/loggers/pinoLog');
-const fs = require("fs");
-const {transporter} = require("../config/mailer/mailer");
-
+const transporter = require("../config/mailer/mailer");
+const {mailer} = require("../config/index");
+console.log(mailer)
 const multer  = require('multer')
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -70,8 +70,8 @@ authRouter.post('/register', upload.single('file'), async (req, res) => {
                 });
                 try{
                     await transporter.sendMail({
-                        from: `"admin" <${config.mailer.mailer_user}>`,
-                        to: config.mailer.mailer_user,
+                        from: `"admin" <${mailer.mailer_user}>`,
+                        to: mailer.mailer_user,
                         subject: 'Nuevo usuario registrado',
                         html: '<h1>Nuevo usuario registrado</h1>' +
                         '<p>El usuario ' + usuario.nombre + ' se ha registrado en la aplicación</p>'

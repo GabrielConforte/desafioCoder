@@ -2,6 +2,8 @@ const nodemailer = require('nodemailer');
 //trae logger de loggers
 const logger = require('../../config/loggers/pinoLog');
 const { mailer } = require('../../config/index');
+
+console.log(mailer);
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     port: 465,
@@ -19,6 +21,8 @@ transporter.verify((error, success) => {
         logger.info('Server is ready to take our messages');
     }
 }
+
 );
+
 
 module.exports = transporter;
