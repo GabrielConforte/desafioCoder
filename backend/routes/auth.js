@@ -8,6 +8,7 @@ const {isAdmin} = require("../models/daos/index");
 const bcrypt = require("bcryptjs");
 const logger = require('../config/loggers/pinoLog');
 const fs = require("fs");
+const {transporter} = require("../config/mailer/mailer");
 
 const multer  = require('multer')
 const storage = multer.diskStorage({
@@ -65,11 +66,26 @@ authRouter.post('/register', upload.single('file'), async (req, res) => {
                             message: "Error al crear el usuario" + err
                         });
                     }
+                   
                 });
+                try{
+                    await transporter.sendMail({
+                        from: `"admin" <${config.mailer.mailer_user}>`,
+                        to: config.mailer.mailer_user,
+                        subject: 'Nuevo usuario registrado',
+                        html: '<h1>Nuevo usuario registrado</h1>' +
+                        '<p>El usuario ' + usuario.nombre + ' se ha registrado en la aplicación</p>'
+                    });
+                }
+                catch(err){
+                    logger.info(err);
+                }
                 res.status(200).json({
                     status: 200,
                     message: "El usuario se ha creado correctamente"
                 });
+
+
         } else {
             res.status(500).json({
                 status: 500,

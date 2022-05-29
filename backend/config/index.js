@@ -21,4 +21,10 @@ let client = {
     client_secret_fb: process.env.CLIENT_SECRET_FB
 }
 
-module.exports = { config, mongo_db, cors, client };
+let mailer = {
+    mailer_user: process.env.MAILER_USER,
+    mailer_pass: process.env.MAILER_PASS,
+}
+
+
+module.exports = { config, mongo_db, cors, client, mailer };
