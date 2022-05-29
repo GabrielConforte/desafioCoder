@@ -16,3 +16,5 @@ modo autocannon
 
 para las pruebas de artillery se ejecuto el siguiente comando
 >artillery quick --count 50 -n 20  http://localhost:8080/info > result_fork.txt
+
+El env lo elimine por un tema de seguridad, pedirlo para las correcciones
