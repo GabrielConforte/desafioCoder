@@ -4,6 +4,8 @@ const {productosDao} = require("../models/daos/index");
 const {carritosDao} = require("../models/daos/index");
 const isAdmin = true
 const logger = require('../config/loggers/pinoLog');
+const transporter = require("../config/mailer/mailer");
+const {mailer} = require("../config/index");
 
 const error403 = {
     status: 403,
@@ -165,6 +167,36 @@ routes.get('/carrito', async (req, res) => {
             logger.error(error);
             }
         });
+
+
+//hagamos una ruta que reciba los productos del carrito y los envie en un email de forma automática
+routes.post('/carrito/:id/email', async (req, res) => {
+    try {
+        let objeto = await carritosDao.getAllById(req.params.id);
+        res.json(objeto);
+        try{
+            await transporter.sendMail({
+                from: `"admin" <${mailer.mailer_user}>`,
+                to: mailer.mailer_user,
+                subject: 'Nuevo usuario registrado',
+                html: '<h1>Nuevo usuario registrado</h1>' +
+                '<p>El usuario ' + objeto.user + ' ha comprado </p>' +
+                '<ul>' +
+                objeto.items.map(item => '<li>' + item.nombre + '</li>').join('') +
+                '</ul>'
+                
+            });
+        }
+        catch(err){
+            logger.info(err);
+        }
+    }
+    catch (error) {
+        logger.error(error);
+    }
+}
+);
+
 
 
     module.exports = routes;

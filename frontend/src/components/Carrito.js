@@ -55,7 +55,26 @@ function Carrito() {
         .then(data => {
                 sessionStorage.removeItem('carrito');
             })
+
     }
+
+    const comprar = () => {
+        fetch(`${BASE_URL}/api/carrito/${user._id}/email`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: user.email
+            })
+        }).then(res => res.json())
+        .then(data => {
+                vaciarCarrito();
+            }
+        )
+    }
+
+
     return (
         <div className="col-2 m-auto">
             <div className="row">
@@ -86,7 +105,7 @@ function Carrito() {
                                     <button className="btn btn-danger" onClick={vaciarCarrito}>Vaciar carrito</button>
                                 </div>
                                 <div className="col-6">
-                                    <button className="btn btn-success">Pagar</button>
+                                    <button className="btn btn-success" onClick={comprar}>Pagar</button>
                                 </div>
                             </div>
                         </div>

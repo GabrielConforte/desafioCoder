@@ -9,18 +9,21 @@ const bcrypt = require("bcryptjs");
 const logger = require('../config/loggers/pinoLog');
 const transporter = require("../config/mailer/mailer");
 const {mailer} = require("../config/index");
-console.log(mailer)
+
 const multer  = require('multer')
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public/images/')
     }
     , filename: function (req, file, cb) {
         //a file name quitale la extensión
-        cb(null, file.originalname.split('.')[0] + '-' + Date.now() + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
+        cb(null, file.originalname.split('.')[0] +
+        '-' + Date.now() + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
     }
 }
 )
+
 const upload = multer({ storage: storage })
 
 authRouter.use(passport.initialize());
