@@ -3,7 +3,8 @@ let productosDao;
 let carritosDao;
 let isAdmin;
 let userDao;
-let baseType = "mongodb";
+let {persistence_type} = require('../config');
+let baseType = persistence_type || 'mongodb';
 
 switch (baseType) {
 	case "files":

@@ -26,4 +26,8 @@ let mailer = {
     mailer_pass: process.env.MAILER_PASS,
 }
 
-module.exports = { config, mongo_db, cors, client, mailer };
+let persistence = {
+    persistence_type: process.env.PERSISTENCE_TYPE,
+}
+
+module.exports = { config, mongo_db, cors, client, mailer, persistence };
