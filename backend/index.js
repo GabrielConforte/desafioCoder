@@ -9,12 +9,22 @@ const PORT = config.port;
 const cors = require('cors');
 let cluster = require('cluster');
 const os = require('os');
+const mensajesRep = require('./models/repositry/mensajesRep');
 const routes = require('./routes/store');
 const authRoutes = require('./routes/auth');
 const responseTime = require('response-time');
 const logger = require('./config/loggers/pinoLog');
 const cookieParser = require('cookie-parser');
+let {Server: HttpServer} = require("http");
+let httpServer = new HttpServer(app);
+const io = require("socket.io")(httpServer, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
 
+  
 //middlewares
 
 app.use(responseTime());
@@ -27,14 +37,7 @@ app.use(session({
         maxAge: 1000 * 60 * 60
     }
 }));
-app.use(cors(
-    {
-        origin: '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        credentials: true,
-        exposedHeaders: ['x-auth-token']
-    }
-));
+app.use(cors("*"));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -42,6 +45,31 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'))
 
+io.on('connection', async(socket) => {
+    let userId;
+    
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    }
+    );  
+    socket.on('connection', async(id) => {
+        userId = id;
+        console.log('user connected');
+        socket.join(userId);
+        
+        socket.on('mensajeEnviado', async(data) => {
+        await mensajesRep.addMensaje(data[0]._id, data[1]);
+        let listaMensajes = await mensajesRep.getMensajes(userId);
+        console.log(listaMensajes);
+        socket.emit('listaMensajes', listaMensajes);
+    }
+    );
+   
+    }
+    );
+    
+}
+);
 
 //routes
 
@@ -60,7 +88,7 @@ if(modo_cluster && cluster.isMaster){
             logger.info(`worker ${worker.process.pid} died`)
         })
 }else{
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
         logger.info(`Server is running on port ${PORT}, Worker PID: ${process.pid}`);
     }); 
 }
@@ -83,4 +111,3 @@ app.use((err, req, res, next) => {
     );
 }
 );
-

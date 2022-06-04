@@ -9,9 +9,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import FormEdit from './components/FormEdit';
 import Formulario from './components/Formulario';
 import Carrito from './components/Carrito';
+
+import Chat from './components/Chat';
+
 const {config} = require('./config/index.js');
-
-
 
 const BASE_URL = config.base_url;
 
@@ -51,7 +52,10 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
+       
         <NavBar user={user} carrito={carrito}/> 
+        <div className='container col-8'>
+          <div className='row'>
         <div className='contenido'><Routes>
           <Route path="/" element={isLogged ? <><Home user={user} carrito={carrito}/></> : <Navigate to="/login"/> } />
           <Route path="/login" element={isLogged ? <Navigate to="/"/> : <Login/>} />
@@ -59,7 +63,16 @@ function App() {
           <Route path="/edit/:id" element={<FormEdit/>} />
           <Route path="/agregar" element={<Formulario/>} />
           <Route path="/carrito" element={<Carrito/>} />
-        </Routes></div>
+        </Routes>
+        </div>
+        
+        { 
+        user &&<div className=''>
+          mensajes:
+        <Chat user={user}></Chat></div>
+      }
+        </div>
+       </div>
       </div>
     </BrowserRouter>
   );
