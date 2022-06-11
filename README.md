@@ -11,8 +11,11 @@ modo cluster
 iniciar
 >npm start
 
-modo autocannon
+modo testing con mocha y supertest
 >npm test
+
+modo testing con chai
+>npm run chai
 
 para las pruebas de artillery se ejecuto el siguiente comando
 >artillery quick --count 50 -n 20  http://localhost:8080/info > result_fork.txt
