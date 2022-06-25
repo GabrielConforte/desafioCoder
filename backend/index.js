@@ -87,16 +87,19 @@ const rootMutation = new GraphQLObjectType({
             
 
 const rootQuery = new GraphQLObjectType({
+    name: 'RootQueryType',
+    fields: {
     getAllProductos: {
         type: new GraphQLList(productoType),
         args: {
-            id: { type: GraphQLString }
+            _id: { type: GraphQLString }
         },
         resolve(parent, args) {
             return productosDao.getAll();
         }
 
-}});
+}}
+});
 const schema = new GraphQLSchema({
     query: rootQuery, mutation: rootMutation
 });
