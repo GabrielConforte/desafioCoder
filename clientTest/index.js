@@ -21,7 +21,9 @@ const main = async () => {
 
 const traerProductos = async () => {
     try {
-        const res = await axios.get('http://localhost:3000/api/productos');
+        const res = await axios.get(
+            'http://localhost:8080/graphql/productos?query=query{productos{id,title,price}}'
+        );
         console.log(res.data);
     }
     catch (err) {
@@ -31,7 +33,7 @@ const traerProductos = async () => {
 
 const traerUnProducto = async () => {
     try {
-        const res = await axios.get('http://localhost:3000/api/productos/1');
+        const res = await axios.get('http://localhost:8080/graphql/productos?query=query{productos(id:1){id,title,price}}');
         console.log(res.data);
     }
     catch (err) {
@@ -41,7 +43,7 @@ const traerUnProducto = async () => {
 
 const insertarProducto = async () => {
     try {
-        const res = await axios.post('http://localhost:3000/api/productos', {
+        const res = await axios.post('http://localhost:8080/graphql/productos', {
             nombre: 'nuevo producto',
             precio: '100',
             descripcion: 'nuevo producto',

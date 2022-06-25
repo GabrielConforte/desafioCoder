@@ -13,12 +13,10 @@ const authRoutes = require('./routes/auth');
 const responseTime = require('response-time');
 const logger = require('./config/loggers/pinoLog');
 const cookieParser = require('cookie-parser');
-const graphql = require('graphql');
-const {GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLString, GraphQLFloat, GraphQLList} = graphql;
+
+const schema = require('./routes/graphql/index');
 const {graphqlHTTP} = require('express-graphql');
 
-//borrar esto despues
-const {productosDao} = require('./models/daos/index')
 //middlewares
 
 app.use(responseTime());
@@ -45,66 +43,6 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'))
-
-//graphql schema
-const productoType = new GraphQLObjectType({
-    name: 'Producto',
-    fields: () => ({
-        id: { type: GraphQLString },
-        title: { type: GraphQLString },
-        description: { type: GraphQLString },
-        code: { type: GraphQLString },
-        thumbnail: { type: GraphQLString },
-        price: { type: GraphQLFloat },
-        stock: { type: GraphQLInt },
-        timestamps: { type: GraphQLString }
-    })
-}
-);
-
-const rootMutation = new GraphQLObjectType({
-    name: 'Mutation',
-    fields: {
-        addProduct: {
-            type: productoType,
-            args: {
-                title: { type: GraphQLString },
-                description: { type: GraphQLString },
-                code: { type: GraphQLString },
-                thumbnail: { type: GraphQLString },
-                price: { type: GraphQLFloat },
-                stock: { type: GraphQLInt }
-            },
-            resolve(parent, args) {
-                productosDao.save(args);
-                return args;
-            }
-        }
-    }
-}
-);
-
-            
-
-const rootQuery = new GraphQLObjectType({
-    name: 'RootQueryType',
-    fields: {
-    getAllProductos: {
-        type: new GraphQLList(productoType),
-        args: {
-            _id: { type: GraphQLString }
-        },
-        resolve(parent, args) {
-            return productosDao.getAll();
-        }
-
-}}
-});
-const schema = new GraphQLSchema({
-    query: rootQuery, mutation: rootMutation
-});
-
-
 
 //routes
 app.use('/graphql', graphqlHTTP({
