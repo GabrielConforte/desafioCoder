@@ -16,4 +16,4 @@ const ProductoType = new GraphQLObjectType({
 }
 );
 
-module.exports =ProductoType;
+module.exports = ProductoType;

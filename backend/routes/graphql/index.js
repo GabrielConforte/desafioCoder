@@ -1,13 +1,57 @@
-const graphql = require('graphql');
-const {GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLString, GraphQLFloat, GraphQLList} = graphql;
-const {productosDao, userDao} = require('../models/daos/index')
-const {productoType} = require('./Typedefs/ProductoType');
+const {GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLString, GraphQLFloat, GraphQLList} =  require('graphql');
+
+const ProductoType = require('./Typedefs/ProductoType');
+const userType = require('./Typedefs/UserType');
+const {productosDao, userDao} = require('../../models/daos/index')
+
+const rootQuery = new GraphQLObjectType({
+    name: 'RootQueryType',
+    fields: {
+    getAllProductos: {
+        type: new GraphQLList(ProductoType),
+        args: {
+            _id: { type: GraphQLString }
+        },
+        resolve(parent, args) {
+            return productosDao.getAll();
+        }
+    },
+    getAllUser:
+    {
+        type: new GraphQLList(userType),
+        args: {
+            _id: { type: GraphQLString }
+        },
+        resolve(parent, args) {
+            return userDao.getAll();
+        }
+
+}, 
+    getProducto: {
+        type: ProductoType,
+        args: {
+            _id: { type: GraphQLString }
+        },
+        resolve(parent, args) {
+            return productosDao.get(args);
+        }
+    },
+    getUser: {
+        type: userType,
+        args: {
+            _id: { type: GraphQLString }
+        },
+        resolve(parent, args) {
+            return userDao.get(args);
+        }
+    }
+}});
 
 const rootMutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
         addProduct: {
-            type: productoType,
+            type: ProductoType,
             args: {
                 title: { type: GraphQLString },
                 description: { type: GraphQLString },
@@ -22,7 +66,7 @@ const rootMutation = new GraphQLObjectType({
             }
         },
         editProducto: {
-            type: productoType,
+            type: ProductoType,
             args: {
                 id: { type: GraphQLString },
                 title: { type: GraphQLString },
@@ -38,7 +82,7 @@ const rootMutation = new GraphQLObjectType({
             }
         },
         deleteProducto: {
-            type: productoType,
+            type: ProductoType,
             args: {
                 id: { type: GraphQLString }
             },
@@ -86,50 +130,7 @@ const rootMutation = new GraphQLObjectType({
 }
 });
 
-            
 
-const rootQuery = new GraphQLObjectType({
-    name: 'RootQueryType',
-    fields: {
-    getAllProductos: {
-        type: new GraphQLList(productoType),
-        args: {
-            _id: { type: GraphQLString }
-        },
-        resolve(parent, args) {
-            return productosDao.getAll();
-        }
-    },
-    getAllUser:
-    {
-        type: new GraphQLList(userType),
-        args: {
-            _id: { type: GraphQLString }
-        },
-        resolve(parent, args) {
-            return userDao.getAll();
-        }
-
-}, 
-    getProducto: {
-        type: productoType,
-        args: {
-            _id: { type: GraphQLString }
-        },
-        resolve(parent, args) {
-            return productosDao.get(args);
-        }
-    },
-    getUser: {
-        type: userType,
-        args: {
-            _id: { type: GraphQLString }
-        },
-        resolve(parent, args) {
-            return userDao.get(args);
-        }
-    }
-}});
 module.exports = new GraphQLSchema({
     query: rootQuery, mutation: rootMutation
 });

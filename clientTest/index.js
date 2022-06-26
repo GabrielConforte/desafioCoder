@@ -1,16 +1,15 @@
 //hagamos un cliente http para que el servidor se quede escuchando, usando axios para hacer la peticion a api/products
 const axios = require('axios');
 
-main();
 
 
 const main = async () => {
     try {
         await traerProductos();
-        const id = await insertarProducto();
-        await traerUnProducto(id);
-        await actualizarProducto(id);
-        await eliminarProducto(id);
+        //const id = await insertarProducto();
+        //await traerUnProducto(id);
+        //await actualizarProducto(id);
+        //await eliminarProducto(id);
     }
     catch (err) {
         console.log(err);
@@ -22,9 +21,13 @@ const main = async () => {
 const traerProductos = async () => {
     try {
         const res = await axios.get(
-            'http://localhost:8080/graphql/productos?query=query{productos{id,title,price}}'
+            'http://localhost:8080/graphql/getproductos?query=query{getAllProductos{id,title,price}}'
         );
-        console.log(res.data);
+        //imprime en consola cada producto que reciba
+        res.data.data.getAllProductos.forEach(producto => {
+            console.log(producto);
+        }
+        );
     }
     catch (err) {
         console.log(err);
@@ -84,3 +87,6 @@ const actualizarProducto = async (id) => {
     }
 }
 
+
+
+main();

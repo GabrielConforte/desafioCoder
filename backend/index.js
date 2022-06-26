@@ -13,7 +13,6 @@ const authRoutes = require('./routes/auth');
 const responseTime = require('response-time');
 const logger = require('./config/loggers/pinoLog');
 const cookieParser = require('cookie-parser');
-
 const schema = require('./routes/graphql/index');
 const {graphqlHTTP} = require('express-graphql');
 
