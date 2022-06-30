@@ -6,10 +6,10 @@ const axios = require('axios');
 const main = async () => {
     try {
         await traerProductos();
-        //const id = await insertarProducto();
-        //await traerUnProducto(id);
-        //await actualizarProducto(id);
-        //await eliminarProducto(id);
+        const id = await insertarProducto();
+        await traerUnProducto(id);
+        await actualizarProducto(id);
+        await eliminarProducto(id);
     }
     catch (err) {
         console.log(err);
@@ -21,7 +21,7 @@ const main = async () => {
 const traerProductos = async () => {
     try {
         const res = await axios.get(
-            'http://localhost:8080/graphql/getproductos?query=query{getAllProductos{id,title,price}}'
+            'http://localhost:8080/graphql/productos?query=query{getAllProductos{id,title,price}}'
         );
         //imprime en consola cada producto que reciba
         res.data.data.getAllProductos.forEach(producto => {
@@ -36,7 +36,7 @@ const traerProductos = async () => {
 
 const traerUnProducto = async () => {
     try {
-        const res = await axios.get('http://localhost:8080/graphql/productos?query=query{productos(id:1){id,title,price}}');
+        const res = await axios.get('http://localhost:8080/graphql/productos?query=query{getProductos(id:1){id,title,price}}');
         console.log(res.data);
     }
     catch (err) {
@@ -46,11 +46,12 @@ const traerUnProducto = async () => {
 
 const insertarProducto = async () => {
     try {
-        const res = await axios.post('http://localhost:8080/graphql/productos', {
+        const res = await axios.post('http://localhost:8080/graphql/productos?query=query{addProduct}', {
             nombre: 'nuevo producto',
             precio: '100',
             descripcion: 'nuevo producto',
-            img: 'nuevo producto'
+            img: 'nuevo producto',
+            id: '1'
         });
         console.log(res.data);
         return res.data.id;
@@ -62,7 +63,7 @@ const insertarProducto = async () => {
 
 const eliminarProducto = async (id) => {
     try {
-        const res = await axios.delete('http://localhost:3000/api/productos/' + id);
+        const res = await axios.delete(`http://localhost:8080/graphql/productos?query=query{deleteProduct(id:${id})}`);	
         console.log(res.data);
     }
     catch (err) {
@@ -72,7 +73,7 @@ const eliminarProducto = async (id) => {
 
 const actualizarProducto = async (id) => {
     try {
-        const res = await axios.put(`http://localhost:3000/api/productos/${id}`
+        const res = await axios.put(`http://localhost:3000/graphql/productos?query=query{updateProducto(id:${id}}`
         , {
             nombre: 'nuevo editado',
             precio: '100',
